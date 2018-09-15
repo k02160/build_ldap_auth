@@ -1,0 +1,49 @@
+From 748e7672134545c5c66fab180c983edbd8d7a106 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Tue, 28 Aug 2018 11:49:35 -0700
+Subject: [PATCH 4/7] Don't write options without value to pwquality conf
+ (#1618865)
+
+Per https://bugzilla.redhat.com/show_bug.cgi?id=1618865 , it is
+incorrect to write lines like this in a pwquality config file:
+
+minlen=
+minclass=
+maxrepeat=
+maxclassrepeat=
+
+There should either be an actual integer value, or the line
+should be omitted entirely. Including the option with no value
+is wrong and breaks pwquality. This should fix the problem by
+only writing the lines if the option is actually set.
+
+Signed-off-by: Adam Williamson <awilliam@redhat.com>
+---
+ src/compat/authcompat.py.in.in | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/src/compat/authcompat.py.in.in b/src/compat/authcompat.py.in.in
+index abe1e585954ccd5ac555339f23c175e941c76ea3..1b4f531b021c1e2e8fd99bd081094da365c0c64e 100755
+--- a/src/compat/authcompat.py.in.in
++++ b/src/compat/authcompat.py.in.in
+@@ -319,10 +319,13 @@ class Configuration:
+         def write(self):
+             config = EnvironmentFile(Path.System('pwquality.conf'))
+ 
+-            config.set("minlen", self.get("passminlen"))
+-            config.set("minclass", self.get("passminclass"))
+-            config.set("maxrepeat", self.get("passmaxrepeat"))
+-            config.set("maxclassrepeat", self.get("passmaxclassrepeat"))
++            # for each if these options, we want to write a line to the config
++            # *only if* it is set to an actual value, see
++            # https://bugzilla.redhat.com/show_bug.cgi?id=1618865
++            for pwval in ["minlen", "minclass", "maxrepeat", "maxclassrepeat"]:
++                if self.isset("pass{0}".format(pwval)):
++                    config.set(pwval, self.get("pass{0}".format(pwval)))
++
+             config.set("lcredit", self.getBoolAsValue("reqlower", -1, 0))
+             config.set("ucredit", self.getBoolAsValue("requpper", -1, 0))
+             config.set("dcredit", self.getBoolAsValue("reqdigit", -1, 0))
+-- 
+2.17.1
+

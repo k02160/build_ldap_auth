@@ -1,0 +1,24 @@
+From 3b6ba3c895dfc7a3c6b3fa43d2c76070e45b0d94 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pavel=20B=C5=99ezina?= <pbrezina@redhat.com>
+Date: Tue, 4 Sep 2018 12:39:16 +0200
+Subject: [PATCH 2/7] man: remove duplicate of with-pamaccess
+
+---
+ src/man/authselect-migration.7.adoc | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/man/authselect-migration.7.adoc b/src/man/authselect-migration.7.adoc
+index 47544a53efd70b55a75d68d5bcbf3c89f875d7e7..35ba484d576ab8a3d923a124f6b1577085deedd4 100644
+--- a/src/man/authselect-migration.7.adoc
++++ b/src/man/authselect-migration.7.adoc
+@@ -85,7 +85,6 @@ configuration file for required services.
+ |--enablefaillock     |with-faillock
+ |--enablepamaccess    |with-pamaccess
+ |--enablewinbindkrb5  |with-krb5
+-|--enablepamaccess    |with-pamaccess
+ |==================================================
+ 
+ .Examples
+-- 
+2.17.1
+

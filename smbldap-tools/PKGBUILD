@@ -1,0 +1,34 @@
+# Maintainer: Emile Pesik <ristridin [at] gmail [dot] com> 
+# Contributor: Martin Imobersteg <imm [at] gmx [dot] ch> 
+pkgname=smbldap-tools 
+#pkgver=0.9.10
+pkgver=0.9.11
+pkgrel=1 
+pkgdesc="A set of perl scripts designed to manage user and group accounts stored in an LDAP directory." 
+arch=(any) 
+url="https://gna.org/projects/smbldap-tools/" 
+license=("GPL")
+depends=('samba' 'openldap' 'perl-digest-sha1' 'perl-unicode-maputf8' 'perl-crypt-smbhash' 'perl-ldap' 'perl-io-socket-ssl')
+source=("https://src.fedoraproject.org/lookaside/pkgs/smbldap-tools/smbldap-tools-0.9.11.tar.gz/md5/e3ce9034922175087bb4fbcd3ca50368/smbldap-tools-0.9.11.tar.gz")
+backup=(etc/smbldap-tools/smbldap.conf etc/smbldap-tools/smbldap_bind.conf)
+md5sums=('e3ce9034922175087bb4fbcd3ca50368')
+
+
+prepare() {
+  cd $srcdir/${pkgname}-${pkgver}
+#  patch -p1 -i $srcdir/smbldap-config.pl.patch
+  }
+
+build() {
+  cd $srcdir/${pkgname}-${pkgver}
+  ./configure --prefix=/usr --sysconfdir=/etc --sbindir=/usr/bin
+  make
+  }
+	
+package() {
+  cd $srcdir/${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  install -D -m644 smbldap.conf $pkgdir/etc/smbldap-tools/smbldap.conf 
+  install -D -m644 smbldap_bind.conf $pkgdir/etc/smbldap-tools/smbldap_bind.conf 
+  }

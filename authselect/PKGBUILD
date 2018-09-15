@@ -1,0 +1,44 @@
+# Maintainer: Kojiro ONO <ono [dot] kojiro [at] gmail [dot] com>
+pkgname=authselect
+pkgver=1.0
+pkgrel=1 
+pkgdesc="Authselect is a tool to select system authentication and identity sources from a list of supported profiles."
+arch=('x86' 'x86_64') 
+url="https://github.com/pbrezina/authselect"
+license=("GPL")
+depends=('m4' 'pkgconf' 'python' 'automake' 'autoconf' 'libtool' 'python3')
+source=("https://github.com/pbrezina/authselect/archive/1.0.tar.gz")
+md5sums=('SKIP')
+
+
+prepare() {
+  cd $srcdir/${pkgname}-${pkgver}
+
+  patch -p1 < ../../0001-lib-fix-profile-origin-debug-message.patch
+  patch -p1 < ../../0002-man-remove-duplicate-of-with-pamaccess.patch
+  patch -p1 < ../../0003-spec-do-not-print-any-output-when-enabling-with-sudo.patch
+  patch -p1 < ../../0004-Don-t-write-options-without-value-to-pwquality-conf-.patch
+  patch -p1 < ../../0005-compat-write-only-options-set-on-command-line-to-pwq.patch
+  patch -p1 < ../../0006-compat-fix-regular-expression-for-environment-files.patch
+  patch -p1 < ../../0007-spec-fix-invalid-options-in-pwquality.conf-generated.patch
+}
+
+build() {
+  cd $srcdir/${pkgname}-${pkgver}
+  autoreconf -iv
+  ./configure \
+    --disable-dependency-tracking \
+    --prefix=/usr \
+    --bindir=/usr/bin \
+    --enable-silent-rules
+  make V=0
+}
+	
+package() {
+  cd $srcdir/${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+  rm -rf ${pkgdir}/usr/sbin
+}
+
+
+

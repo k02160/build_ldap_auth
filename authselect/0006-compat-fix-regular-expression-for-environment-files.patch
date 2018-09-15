@@ -1,0 +1,31 @@
+From 7c37960dbf378dc1041c1d635629d509c48bae20 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pavel=20B=C5=99ezina?= <pbrezina@redhat.com>
+Date: Tue, 4 Sep 2018 11:38:38 +0200
+Subject: [PATCH 6/7] compat: fix regular expression for environment files
+
+Any word character (\w) was not enough as it does not accept e.g. '-'.
+Therefore line like 'ocredit=-1' was incorrectly parse returning only
+'1' as value instead of '-1'.
+---
+ src/compat/authcompat_EnvironmentFile.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/compat/authcompat_EnvironmentFile.py b/src/compat/authcompat_EnvironmentFile.py
+index 529497e61903b3fb89f560b8e0ac0bb38111b46a..5738c6cafaf75109a5c1dbb9d3f040686a4945e1 100644
+--- a/src/compat/authcompat_EnvironmentFile.py
++++ b/src/compat/authcompat_EnvironmentFile.py
+@@ -34,9 +34,9 @@ class EnvironmentFile:
+         self.environment = []
+ 
+         delimiter_re = delimiter_re if delimiter_re is not None else delimiter
+-        self.pattern = re.compile('^(\s*)(\S*)([^\n\w]*)(' +
++        self.pattern = re.compile('^(\s*)(\S*)([^\n\S]*)(' +
+                                   delimiter_re +
+-                                  ')([^\n\w]*)(.*)$',
++                                  ')([^\n\S]*)(.*)$',
+                                   re.MULTILINE)
+ 
+         self.read()
+-- 
+2.17.1
+

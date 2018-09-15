@@ -1,0 +1,28 @@
+From dd0b2a5b4293ac5a46c1ecf64b2716d210ade1ee Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pavel=20B=C5=99ezina?= <pbrezina@redhat.com>
+Date: Tue, 4 Sep 2018 14:13:49 +0200
+Subject: [PATCH 3/7] spec: do not print any output when enabling with-sudo
+
+---
+ rpm/authselect.spec.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/rpm/authselect.spec.in b/rpm/authselect.spec.in
+index c1de3107b099bab05284f65a4f6712fac41297da..70af91e16c72478e5e5bba0b4f59df86b66fb99f 100644
+--- a/rpm/authselect.spec.in
++++ b/rpm/authselect.spec.in
+@@ -210,9 +210,9 @@ if [ $? -eq 0 ]; then
+ 
+     if [ $PROFILE == "sssd" ] ; then
+         if grep -E "services[[:blank:]]*=[[:blank:]]*.*sudo" /etc/sssd/sssd.conf &> /dev/null ; then
+-            %{_bindir}/authselect enable-feature with-sudo
++            %{_bindir}/authselect enable-feature with-sudo &> /dev/null
+         elif systemctl is-active sssd-sudo.service sssd-sudo.socket --quiet || systemctl is-enabled sssd-sudo.socket --quiet ; then
+-            %{_bindir}/authselect enable-feature with-sudo
++            %{_bindir}/authselect enable-feature with-sudo &> /dev/null
+         fi
+     fi
+ fi
+-- 
+2.17.1
+

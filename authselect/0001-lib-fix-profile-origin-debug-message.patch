@@ -1,0 +1,30 @@
+From 607235797f0503178f81b5a2074803fdddd84071 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pavel=20B=C5=99ezina?= <pbrezina@redhat.com>
+Date: Tue, 4 Sep 2018 12:33:21 +0200
+Subject: [PATCH 1/7] lib: fix profile origin debug message
+
+Previously, we failed to match the location and always print that
+the selected profile is a default profile.
+---
+ src/lib/profiles/read.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib/profiles/read.c b/src/lib/profiles/read.c
+index 002329090cec29eee7969a5f04634ba1bb214a4c..a3a3e62788a3b3ae493a22a8b8e10170d572fc6f 100644
+--- a/src/lib/profiles/read.c
++++ b/src/lib/profiles/read.c
+@@ -125,9 +125,9 @@ authselect_profile_open(const char *id,
+             return ret;
+         }
+ 
+-        if (strcmp(location, DIR_CUSTOM_PROFILES) == 0) {
++        if (strcmp(locations[i], DIR_CUSTOM_PROFILES) == 0) {
+             INFO("Profile [%s] is a custom profile", id);
+-        } else if (strcmp(location, DIR_VENDOR_PROFILES) == 0) {
++        } else if (strcmp(locations[i], DIR_VENDOR_PROFILES) == 0) {
+             INFO("Profile [%s] is a vendor profile", id);
+         } else {
+             INFO("Profile [%s] is a default profile", id);
+-- 
+2.17.1
+
